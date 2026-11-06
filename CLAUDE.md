@@ -76,8 +76,8 @@ Two paths, both always available:
    - The fetches use `cache: 'no-store'`. `sw.js` only caches same-origin requests and Esri
      tiles. (The toad app's `sw.js` caches every GET, Central's CSV included, so its first
      refresh can return a stale copy. Don't copy that here.)
-   - How fast a new entity appears in the manifest CSV after its submission hasn't been measured
-     against a live Central yet.
+   - Field-tested on the live Central (2026-11-06): a new site reached a second user's device
+     almost instantly, and sessions saved and synced correctly.
 
 Site precedence in `allKnownSites()`: Central's CSV, then this phone's own site records, then
 teammate-shared sites.
