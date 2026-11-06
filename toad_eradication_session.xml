@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<h:html xmlns="http://www.w3.org/2002/xforms" xmlns:h="http://www.w3.org/1999/xhtml" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:jr="http://openrosa.org/javarosa" xmlns:orx="http://openrosa.org/xforms" xmlns:odk="http://www.opendatakit.org/xforms">
+  <h:head>
+    <h:title>Toad Eradication Session</h:title>
+    <model odk:xforms-version="1.0.0">
+      <instance>
+        <data id="toad_eradication_session">
+          <site_id/>
+          <site_name/>
+          <site_lat/>
+          <site_lon/>
+          <collector/>
+          <device_id/>
+          <night_date/>
+          <start_date/>
+          <start_time/>
+          <end_time/>
+          <duration_seconds/>
+          <location_lat/>
+          <location_lon/>
+          <session_track/>
+          <session_track_seconds/>
+          <toads_caught/>
+          <toads_escaped/>
+          <notes/>
+          <capture jr:template="">
+            <capture_type/>
+            <capture_count>1</capture_count>
+            <capture_seconds/>
+          </capture>
+          <capture>
+            <capture_type/>
+            <capture_count>1</capture_count>
+            <capture_seconds/>
+          </capture>
+          <meta>
+            <instanceID/>
+          </meta>
+        </data>
+      </instance>
+      <instance id="toad_eradication_sites" src="jr://file-csv/toad_eradication_sites.csv"/>
+      <instance id="capture_type_choices">
+        <root>
+          <item>
+            <name>caught</name>
+            <label>Caught (removed)</label>
+          </item>
+          <item>
+            <name>escaped</name>
+            <label>Seen, not caught</label>
+          </item>
+        </root>
+      </instance>
+      <bind nodeset="/data/site_id" type="string" required="true()"/>
+      <bind nodeset="/data/site_name" type="string" required="false()"/>
+      <bind nodeset="/data/site_lat" type="decimal" required="false()"/>
+      <bind nodeset="/data/site_lon" type="decimal" required="false()"/>
+      <bind nodeset="/data/collector" type="string" required="true()"/>
+      <bind nodeset="/data/device_id" type="string" required="false()"/>
+      <bind nodeset="/data/night_date" type="date" required="true()"/>
+      <bind nodeset="/data/start_date" type="date" required="true()"/>
+      <bind nodeset="/data/start_time" type="time" required="true()"/>
+      <bind nodeset="/data/end_time" type="time" required="true()"/>
+      <bind nodeset="/data/duration_seconds" type="int" required="true()" constraint=". &gt;= 0"/>
+      <bind nodeset="/data/location_lat" type="decimal" required="false()"/>
+      <bind nodeset="/data/location_lon" type="decimal" required="false()"/>
+      <bind nodeset="/data/session_track" type="geotrace" required="false()"/>
+      <bind nodeset="/data/session_track_seconds" type="string" required="false()"/>
+      <bind nodeset="/data/toads_caught" type="int" required="true()" constraint=". &gt;= 0"/>
+      <bind nodeset="/data/toads_escaped" type="int" required="true()" constraint=". &gt;= 0"/>
+      <bind nodeset="/data/notes" type="string" required="false()"/>
+      <bind nodeset="/data/capture/capture_type" type="string" required="true()"/>
+      <bind nodeset="/data/capture/capture_count" type="int" required="true()" constraint=". &gt;= 1" jr:constraintMsg="Must be at least 1"/>
+      <bind nodeset="/data/capture/capture_seconds" type="int" required="true()" constraint=". &gt;= 0"/>
+      <bind nodeset="/data/meta/instanceID" type="string" readonly="true()" jr:preload="uid"/>
+    </model>
+  </h:head>
+  <h:body>
+    <select1 ref="/data/site_id">
+      <label>Site</label>
+      <hint>Entity ID of the eradication site. Populated by the app.</hint>
+      <itemset nodeset="instance('toad_eradication_sites')/root/item">
+        <value ref="name"/>
+        <label ref="label"/>
+      </itemset>
+    </select1>
+    <input ref="/data/site_name">
+      <label>Site name (copy)</label>
+      <hint>Copy of the site name at the time of the session</hint>
+    </input>
+    <input ref="/data/site_lat">
+      <label>Site latitude (copy)</label>
+    </input>
+    <input ref="/data/site_lon">
+      <label>Site longitude (copy)</label>
+    </input>
+    <input ref="/data/collector">
+      <label>Collector</label>
+    </input>
+    <input ref="/data/device_id">
+      <label>Device ID</label>
+      <hint>Random ID of the phone that recorded the session</hint>
+    </input>
+    <input ref="/data/night_date">
+      <label>Night of</label>
+      <hint>Local date of the evening the session belongs to (start time minus 12 h)</hint>
+    </input>
+    <input ref="/data/start_date">
+      <label>Start date</label>
+    </input>
+    <input ref="/data/start_time">
+      <label>Start time</label>
+    </input>
+    <input ref="/data/end_time">
+      <label>End time</label>
+    </input>
+    <input ref="/data/duration_seconds">
+      <label>Session duration (seconds)</label>
+    </input>
+    <input ref="/data/location_lat">
+      <label>Start latitude</label>
+      <hint>GPS latitude at session start</hint>
+    </input>
+    <input ref="/data/location_lon">
+      <label>Start longitude</label>
+      <hint>GPS longitude at session start</hint>
+    </input>
+    <input ref="/data/session_track">
+      <label>Session track</label>
+      <hint>Auto-recorded GPS track (every 30 s)</hint>
+    </input>
+    <input ref="/data/session_track_seconds">
+      <label>Session track point times (elapsed seconds)</label>
+    </input>
+    <input ref="/data/toads_caught">
+      <label>Toads caught (total)</label>
+    </input>
+    <input ref="/data/toads_escaped">
+      <label>Toads seen but not caught (total)</label>
+    </input>
+    <input ref="/data/notes">
+      <label>Notes</label>
+    </input>
+    <group ref="/data/capture">
+      <label>Capture</label>
+      <repeat nodeset="/data/capture">
+        <select1 ref="/data/capture/capture_type">
+          <label>Caught or escaped</label>
+          <itemset nodeset="instance('capture_type_choices')/root/item">
+            <value ref="name"/>
+            <label ref="label"/>
+          </itemset>
+        </select1>
+        <input ref="/data/capture/capture_count">
+          <label>Number of toads</label>
+        </input>
+        <input ref="/data/capture/capture_seconds">
+          <label>Time (seconds since session start)</label>
+        </input>
+      </repeat>
+    </group>
+  </h:body>
+</h:html>
